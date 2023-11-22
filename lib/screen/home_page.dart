@@ -62,7 +62,10 @@ class _HomePageState extends State<HomePage> {
                   'Add Contact',
                 ),
                 content: StatefulBuilder(
-                  builder: (context, setState) {
+                  builder: (
+                    context,
+                    setState,
+                  ) {
                     return SizedBox(
                       height: 400,
                       width: 400,
@@ -91,7 +94,23 @@ class _HomePageState extends State<HomePage> {
                                     if (currentStep < 2) {
                                       currentStep++;
                                     }
-                                    setState(() {});
+                                    if (nameC.text.isNotEmpty &&
+                                        emailC.text.isNotEmpty &&
+                                        contactC.text.isNotEmpty) {
+                                      Contact conData = Contact(
+                                          pic: 'assets/pic/user.png',
+                                          name: nameC.text,
+                                          contact: contactC.text,
+                                          email: emailC.text);
+                                      Global.contactInfo.add(conData);
+                                    }
+                                    contactC.clear();
+                                    nameC.clear();
+                                    emailC.clear();
+                                    Navigator.pop(
+                                      context,
+                                    );
+                                    super.setState(() {});
                                   },
                                   child: const Text('Finish'),
                                 ),
