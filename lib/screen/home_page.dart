@@ -21,17 +21,25 @@ class _HomePageState extends State<HomePage> {
     if (val.isEmpty) {
       res = Global.contactInfo;
     } else {
-      res = Global.contactInfo.where((e) => e.name.contains(val)).toList();
+      res = Global.contactInfo.where((e) {
+        return e.name.contains(val);
+      }).toList();
     }
     setState(() {
       Global.find = res;
     });
   }
 
+  TextEditingController nameC = TextEditingController();
+  TextEditingController emailC = TextEditingController();
+  TextEditingController contactC = TextEditingController();
+
   TextEditingController festQuoteController = TextEditingController();
+  int currentStep = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //  App Bar.....................................................
       appBar: AppBar(
         title: const Text('Home Page'),
         centerTitle: true,
@@ -43,6 +51,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+      // TODO: Add Contact .................................................
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -50,24 +59,145 @@ class _HomePageState extends State<HomePage> {
             builder: (context) {
               return AlertDialog(
                 title: const Text(
-                  'Add Quote',
+                  'Add Contact',
                 ),
-                content: TextField(
-                  controller: festQuoteController,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter Quote',
-                  ),
+                content: StatefulBuilder(
+                  builder: (context, setState) {
+                    return SizedBox(
+                      height: 400,
+                      width: 400,
+                      child: Stepper(
+                        controlsBuilder: (context, details) {
+                          if (currentStep == 0) {
+                            return Row(
+                              children: [
+                                FilledButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (currentStep < 2) {
+                                        currentStep++;
+                                      }
+                                    });
+                                  },
+                                  child: const Text('Continue'),
+                                ),
+                              ],
+                            );
+                          } else if (currentStep == 2) {
+                            return Row(
+                              children: [
+                                FilledButton(
+                                  onPressed: () {
+                                    if (currentStep < 2) {
+                                      currentStep++;
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: const Text('Finish'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (currentStep > 0) {
+                                        currentStep--;
+                                      }
+                                    });
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Row(
+                              children: [
+                                FilledButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (currentStep < 2) {
+                                        currentStep++;
+                                      }
+                                    });
+                                  },
+                                  child: const Text('Continue'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (currentStep > 0) {
+                                        currentStep--;
+                                      }
+                                    });
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                              ],
+                            );
+                          }
+                        },
+                        currentStep: currentStep,
+                        // onStepContinue: () {
+                        //   setState(() {
+                        //     if (currentStep < 2) {
+                        //       currentStep++;
+                        //     }
+                        //   });
+                        // },
+                        // onStepCancel: () {
+                        //   setState(() {
+                        //     if (currentStep > 0) {
+                        //       currentStep--;
+                        //     }
+                        //   });
+                        // },
+                        steps: <Step>[
+                          Step(
+                            state: (currentStep == 0)
+                                ? StepState.editing
+                                : (nameC.text.isEmpty)
+                                    ? StepState.error
+                                    : StepState.complete,
+                            title: const Text('Name'),
+                            content: TextField(
+                              controller: nameC,
+                              decoration: const InputDecoration(
+                                  hintText: 'Enter your name'),
+                            ),
+                          ),
+                          Step(
+                            state: (currentStep < 1)
+                                ? StepState.indexed
+                                : (currentStep == 1)
+                                    ? StepState.editing
+                                    : (emailC.text.isEmpty)
+                                        ? StepState.error
+                                        : StepState.complete,
+                            title: const Text('Email'),
+                            content: TextField(
+                              controller: emailC,
+                              decoration: const InputDecoration(
+                                  hintText: 'Enter your Email'),
+                            ),
+                          ),
+                          Step(
+                            state: (currentStep < 2)
+                                ? StepState.indexed
+                                : (currentStep == 2)
+                                    ? StepState.editing
+                                    : (contactC.text.isEmpty)
+                                        ? StepState.error
+                                        : StepState.complete,
+                            title: const Text('Contact'),
+                            content: TextField(
+                              controller: contactC,
+                              decoration: const InputDecoration(
+                                  hintText: 'Enter your Contact'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-                actions: [
-                  OutlinedButton(
-                    onPressed: () {
-                      // Global.fest_quote = festQuoteController.text;
-                      Navigator.pop(context);
-                      setState(() {});
-                    },
-                    child: const Text('Done'),
-                  ),
-                ],
               );
             },
           );
@@ -90,55 +220,80 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  TextField(
-                    onChanged: (val) => filterData(val),
-                    decoration: const InputDecoration(
-                        labelText: 'Search', suffixIcon: Icon(Icons.search)),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: TextField(
+                      onChanged: (val) => filterData(val),
+                      decoration: const InputDecoration(
+                        labelText: 'Search',
+                        suffixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(23),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
+                  const Divider(thickness: 3),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: Global.find.length,
-                      itemBuilder: (context, index) => Card(
-                        key: ValueKey(Global.find[index].name),
-                        // color: Colors.blue,
-                        elevation: 4,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).pushNamed('viewContact',
-                                arguments: Global.find[index]);
-                          },
-                          child: ListTile(
-                            leading: Container(
-                              height: 50,
-                              width: 50,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              child: const CircleAvatar(
-                                backgroundColor: Colors.black12,
-                                child: Image(
-                                  image: AssetImage('assets/pic/user.png'),
-                                  fit: BoxFit.cover,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: ListView.builder(
+                        itemCount: Global.find.length,
+                        itemBuilder: (context, index) => Card(
+                          key: ValueKey(Global.find[index].name),
+                          // color: Colors.blue,
+                          // elevation: 9,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).pushNamed('viewContact',
+                                  arguments: Global.find[index]);
+                            },
+                            child: Card(
+                              elevation: 9,
+                              child: ListTile(
+                                leading: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  height: 50,
+                                  width: 50,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(
+                                        width: 2, color: Colors.black54),
+                                  ),
+                                  // Image......................................
+                                  child: const CircleAvatar(
+                                    backgroundColor: Colors.black12,
+                                    child: Image(
+                                      image: AssetImage('assets/pic/user.png'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            title: Text(
-                              Global.find[index].name.toString(),
-                              style: const TextStyle(
-                                fontSize: 24,
-                                // color: Colors.white,
-                              ),
-                            ),
-                            subtitle: Text(
-                              Global.find[index].contact.toString(),
-                              style: const TextStyle(
-                                fontSize: 24,
-                                // color: Colors.white,
+                                // Name ........................................
+                                title: Text(
+                                  Global.find[index].name.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    // color: Colors.white,
+                                  ),
+                                ),
+                                // Number ......................................
+                                subtitle: Text(
+                                  Global.find[index].contact.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    // color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
