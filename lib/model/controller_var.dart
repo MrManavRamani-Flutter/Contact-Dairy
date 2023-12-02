@@ -1,9 +1,7 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
+// TextEditingController.....
 class ControllerVar {
   TextEditingController nameC = TextEditingController();
   TextEditingController emailC = TextEditingController();

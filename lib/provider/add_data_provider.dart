@@ -8,6 +8,7 @@ import 'package:contact_diary/model/current_step.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+// Add Data Provider ....
 class AddDataProvider extends ChangeNotifier {
   // Create Obj of Current Step of Editing...........
   CurrentStep cs = CurrentStep(currentStep: 0);

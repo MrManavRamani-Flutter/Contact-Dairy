@@ -5,6 +5,7 @@ import 'package:contact_diary/provider/add_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// Contact Detail Page.....
 class ViewContactInfo extends StatelessWidget {
   const ViewContactInfo({super.key});
 

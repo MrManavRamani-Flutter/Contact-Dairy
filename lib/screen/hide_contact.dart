@@ -2,6 +2,7 @@ import 'package:contact_diary/provider/add_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// Hide Contact Page......
 class HideContact extends StatelessWidget {
   const HideContact({super.key});
 
