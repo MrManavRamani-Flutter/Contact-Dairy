@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddDataProvider extends ChangeNotifier {
-  // Create Obj of Current Step of Editing.............
+  // Create Obj of Current Step of Editing...........
   CurrentStep cs = CurrentStep(currentStep: 0);
   // Hide contact List :-
   List<Contact> hideContact = [];
