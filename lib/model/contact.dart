@@ -1,10 +1,12 @@
+import 'dart:io';
+
 class Contact {
-  String pic;
+  File? pic;
   String name;
   String contact;
   String email;
   Contact({
-    required this.pic,
+    this.pic,
     required this.name,
     required this.contact,
     required this.email,
